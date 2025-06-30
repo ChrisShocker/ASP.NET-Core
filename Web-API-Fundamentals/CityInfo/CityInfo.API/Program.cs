@@ -9,6 +9,9 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+
+/* Everything below is middleware and the order it's declared in matters */
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -16,6 +19,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// redirect http calls to be https
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

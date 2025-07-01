@@ -11,7 +11,7 @@ namespace CityInfo.API.Controllers
      * [Route<"api/[controller]">] can be used to
      * dynamically set the controller name in the route
     */
-    [Route("api/cities")] 
+    [Route("api/cities")]
     public class CitiesController : ControllerBase
     {
         // use routing attribute to specify the route for this controller
@@ -34,7 +34,10 @@ namespace CityInfo.API.Controllers
         {
             var cityToReturn = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == id);
 
-            if (cityToReturn == null) { return NotFound(); }
+            if (cityToReturn == null)
+            {
+                return NotFound();
+            }
 
             return Ok(cityToReturn);
         }

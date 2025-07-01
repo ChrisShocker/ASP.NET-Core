@@ -20,22 +20,69 @@ namespace CityInfo.API
                 {
                     Id = 1,
                     Name = "New York",
-                    Description = "The Big Apple"
+                    Description = "The Big Apple",
+                    PointsOfInterest = new List<PointOfInterestDto>()
+                    {
+                        new PointOfInterestDto()
+                        {
+                            Id = 1,
+                            Name = "Statue of Liberty",
+                            Description = "A colossal neoclassical sculpture on Liberty Island",
+                        },
+                        new PointOfInterestDto()
+                        {
+                            Id = 2,
+                            Name = "Central Park",
+                            Description = "An urban park in New York City",
+                        },
+                    },
                 },
                 new CityDto()
                 {
                     Id = 2,
                     Name = "Los Angeles",
-                    Description = "The City of Angels"
+                    Description = "The City of Angels",
+                    PointsOfInterest = new List<PointOfInterestDto>()
+                    {
+                        new PointOfInterestDto()
+                        {
+                            Id = 1,
+                            Name = "Hollywood Sign",
+                            Description =
+                                "An iconic landmark and cultural symbol located in Los Angeles",
+                        },
+                        new PointOfInterestDto()
+                        {
+                            Id = 2,
+                            Name = "Griffith Observatory",
+                            Description =
+                                "A popular observatory offering stunning views of Los Angeles",
+                        },
+                    },
                 },
                 new CityDto()
                 {
                     Id = 3,
                     Name = "Chicago",
-                    Description = "The Windy City"
-                }
-
-
+                    Description = "The Windy City",
+                    PointsOfInterest = new List<PointOfInterestDto>()
+                    {
+                        new PointOfInterestDto()
+                        {
+                            Id = 1,
+                            Name = "Willis Tower",
+                            Description =
+                                "A 110-story skyscraper in Chicago, formerly known as Sears Tower",
+                        },
+                        new PointOfInterestDto()
+                        {
+                            Id = 2,
+                            Name = "Millennium Park",
+                            Description =
+                                "A public park located in the Loop community area of Chicago",
+                        },
+                    },
+                },
             };
         }
     }

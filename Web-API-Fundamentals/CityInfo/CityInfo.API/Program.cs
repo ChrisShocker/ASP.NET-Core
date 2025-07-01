@@ -1,13 +1,32 @@
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder
+    .Services.AddControllers(options =>
+    {
+        //input formatters can also be configured here to enforce specific formats
+
+        // return 406 Not Acceptable on invalid format requests
+        options.ReturnHttpNotAcceptable = true;
+    })
+    //add support for xml serialization
+    .AddXmlDataContractSerializerFormatters();
+
+// add ProblemDetails middleware
+// this allows manipulation of the ProblemDetails response
+builder.Services.AddProblemDetails(options =>
+{
+    options.CustomizeProblemDetails = (ctx) =>
+    {
+        ctx.ProblemDetails.Extensions.Add("server", Environment.MachineName);
+    };
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
 
 /* Everything below is middleware and the order it's declared in matters */
 
@@ -29,7 +48,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-// No routes are specefied, so we have to setup the routing manually using attribute based routing 
+// No routes are specified, so we have to setup the routing manually using attribute based routing
 app.MapControllers();
 
 app.Run();

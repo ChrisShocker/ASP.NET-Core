@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CityInfo.API.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CityInfo.API.Controllers
 {
@@ -15,15 +16,27 @@ namespace CityInfo.API.Controllers
     {
         // use routing attribute to specify the route for this controller
         [HttpGet]
-        public JsonResult GetCities()
+        public ActionResult<CityDto[]> GetCities()
         {
-            // this is a simple example of returning JSON data
-            return new JsonResult(new[]
+
+            var citiesToReturn = CitiesDataStore.Current.Cities;
+
+            if (citiesToReturn.Count == 0)
             {
-                new { Id = 1, Name = "New York" },
-                new { Id = 2, Name = "Los Angeles" },
-                new { Id = 3, Name = "Chicago" }
-            });
+                return NotFound();
+            }
+
+            return Ok(citiesToReturn);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<CityDto> GetCity(int id)
+        {
+            var cityToReturn = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == id);
+
+            if (cityToReturn == null) { return NotFound(); }
+
+            return Ok(cityToReturn);
         }
     }
 }

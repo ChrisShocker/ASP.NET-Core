@@ -1,4 +1,5 @@
 ﻿using CityInfo.API.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CityInfo.API.Controllers
@@ -110,6 +111,55 @@ namespace CityInfo.API.Controllers
                     Id = pointOfInterestToUpdate.Id,
                     Name = pointOfInterestToUpdate.Name,
                     Description = pointOfInterestToUpdate.Description,
+                }
+            );
+        }
+
+        [HttpPatch("{pointOfInterestId}")]
+        public ActionResult<PointOfInterestUpdateDto> PartiallyUpdatePointOfInterest(
+            int cityId,
+            int pointOfInterestId,
+            JsonPatchDocument<PointOfInterestUpdateDto> patchDocument
+        )
+        {
+            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            var pointOfInterestFromDataStore = city.PointsOfInterest.FirstOrDefault(p =>
+                p.Id == pointOfInterestId
+            );
+
+            if (pointOfInterestFromDataStore == null)
+            {
+                return NotFound();
+            }
+
+            var pointOfInterestToPatch = new PointOfInterestUpdateDto()
+            {
+                Name = pointOfInterestFromDataStore.Name,
+                Description = pointOfInterestFromDataStore.Description,
+            };
+
+            patchDocument.ApplyTo(pointOfInterestToPatch, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            pointOfInterestFromDataStore.Name = pointOfInterestToPatch.Name;
+            pointOfInterestFromDataStore.Description = pointOfInterestToPatch.Description;
+
+            return Ok(
+                new PointOfInterestDto()
+                {
+                    Id = pointOfInterestFromDataStore.Id,
+                    Name = pointOfInterestFromDataStore.Name,
+                    Description = pointOfInterestFromDataStore.Description,
                 }
             );
         }

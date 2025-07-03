@@ -11,6 +11,7 @@ builder
         // return 406 Not Acceptable on invalid format requests
         options.ReturnHttpNotAcceptable = true;
     })
+    .AddNewtonsoftJson()
     //add support for xml serialization
     .AddXmlDataContractSerializerFormatters();
 

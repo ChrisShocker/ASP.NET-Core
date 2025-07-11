@@ -46,5 +46,38 @@ namespace CityInfo.API.Controllers
             // dynamically get content and path to the file
             return File(bytes, contentType, Path.GetFileName(pathToFile));
         }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateFile(IFormFile file)
+        {
+            if (file.Length == 0)
+            {
+                return BadRequest("File is empty.");
+            }
+            if (file.Length > 2097152) // 2 MB
+            {
+                return BadRequest("File is too large. Maximum size is 2 MB.");
+            }
+            if (file.ContentType != "application/pdf")
+            {
+                return BadRequest("Invalid file type. Only PDF files are allowed.");
+            }
+
+            //demo purpose/bad practice
+            var path = Path.Combine(
+                //uploaded files should be segregated to a directory without execute privileges to prevent files that could be harmful
+                //not done here
+                Directory.GetCurrentDirectory(),
+                $"uploaded_file{Guid.NewGuid()}.pdf"
+            );
+
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                // copy the uploaded file to the specified path
+                await file.CopyToAsync(stream);
+            }
+
+            return Ok("File Created: " + file);
+        }
     }
 }

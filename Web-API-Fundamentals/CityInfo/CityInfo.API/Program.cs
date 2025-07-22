@@ -17,13 +17,15 @@ builder
 
 // add ProblemDetails middleware
 // this allows manipulation of the ProblemDetails response
-builder.Services.AddProblemDetails(options =>
-{
-    options.CustomizeProblemDetails = (ctx) =>
-    {
-        ctx.ProblemDetails.Extensions.Add("server", Environment.MachineName);
-    };
-});
+//builder.Services.AddProblemDetails(options =>
+//{
+//    options.CustomizeProblemDetails = (ctx) =>
+//    {
+//        ctx.ProblemDetails.Extensions.Add("server", Environment.MachineName);
+//    };
+//});
+
+builder.Services.AddProblemDetails();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -35,6 +37,14 @@ builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
 var app = builder.Build();
 
 /* Everything below is middleware and the order it's declared in matters */
+
+if (!app.Environment.IsDevelopment())
+{
+    // this will add the exception handler middleware to the app
+    // it will handle exceptions thrown in all middleware after this
+    // and return a ProblemDetails response
+    app.UseExceptionHandler("/api/errors");
+}
 
 // Configure the HTTP request pipeline.
 // this is the default env setup, other envs can be used to configure different middleware

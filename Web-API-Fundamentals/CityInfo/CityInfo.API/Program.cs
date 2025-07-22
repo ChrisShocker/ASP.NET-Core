@@ -1,6 +1,19 @@
 using Microsoft.AspNetCore.StaticFiles;
+using Serilog;
+
+//configure Serilog for logging to console and a file, a file will be created once a day in the logs folder
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.Console()
+    .WriteTo.File("logs/cityinfo.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+//builder.Logging.ClearProviders();
+//builder.Logging.AddConsole();
+// Use Serilog for logging
+builder.Host.UseSerilog();
 
 // Add services to the container.
 builder

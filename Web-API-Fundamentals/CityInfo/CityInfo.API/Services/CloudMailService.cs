@@ -1,6 +1,6 @@
 ﻿namespace CityInfo.API.Services
 {
-    public class LocalMailService : IMailService
+    public class CloudMailService : IMailService
     {
         private string _mailToAddress = "admin@mycompany.com";
         private string _mailFromAddress = "noreply@mycompany.com";
@@ -9,7 +9,7 @@
         {
             // here we would send the email using an SMTP client or similar
             // for now, we'll just simulate sending an email by writing to the console
-            Console.WriteLine(nameof(LocalMailService));
+            Console.WriteLine(nameof(CloudMailService));
             Console.WriteLine($"Mail from: {_mailFromAddress}");
             Console.WriteLine($"Mail to: {_mailToAddress}");
             Console.WriteLine($"Subject: {subject}");

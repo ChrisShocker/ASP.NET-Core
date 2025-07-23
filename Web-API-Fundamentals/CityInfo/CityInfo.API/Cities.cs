@@ -8,7 +8,8 @@ namespace CityInfo.API
         public List<CityDto> Cities { get; set; }
 
         //add current data store as a singleton so it can be used throughout the app
-        public static CitiesDataStore Current { get; } = new CitiesDataStore();
+        //instead of creating an instance here we can do it in the middleware
+        //public static CitiesDataStore Current { get; } = new CitiesDataStore();
 
         // constructor to initialize the data store with some sample cities
         public CitiesDataStore()

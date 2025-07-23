@@ -5,7 +5,6 @@ namespace CityInfo.API.Controllers
 {
     //use APIController attribute to add support for automatic model validation, binding source inference, and more
     [ApiController]
-
     /*
      * specify the base route for this controller
      * [Route<"api/[controller]">] can be used to
@@ -14,12 +13,21 @@ namespace CityInfo.API.Controllers
     [Route("api/cities")]
     public class CitiesController : ControllerBase
     {
+        // inject the logger to log messages
+        private readonly CitiesDataStore _citiesDataStore;
+
+        // constructor to inject the logger
+        public CitiesController(CitiesDataStore citiesDataStore)
+        {
+            _citiesDataStore =
+                citiesDataStore ?? throw new ArgumentNullException(nameof(citiesDataStore));
+        }
+
         // use routing attribute to specify the route for this controller
         [HttpGet]
         public ActionResult<CityDto[]> GetCities()
         {
-
-            var citiesToReturn = CitiesDataStore.Current.Cities;
+            var citiesToReturn = _citiesDataStore.Cities;
 
             if (citiesToReturn.Count == 0)
             {
@@ -32,7 +40,7 @@ namespace CityInfo.API.Controllers
         [HttpGet("{id}")]
         public ActionResult<CityDto> GetCity(int id)
         {
-            var cityToReturn = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == id);
+            var cityToReturn = _citiesDataStore.Cities.FirstOrDefault(c => c.Id == id);
 
             if (cityToReturn == null)
             {

@@ -1,3 +1,4 @@
+using CityInfo.API;
 using CityInfo.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Serilog;
@@ -45,11 +46,19 @@ builder.Services.AddProblemDetails();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// we can use Transient lifetime for services that are stateless and lightweight
-builder.Services.AddTransient<LocalMailService>();
-
 // add support for getting file content types based on file extensions
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
+
+// we can use Transient lifetime for services that are stateless and lightweight
+// on request an interface of IMailService will be created as a LocalMailService
+// use local if debugging else use CloudMailService
+#if DEBUG
+builder.Services.AddTransient<IMailService, LocalMailService>();
+#else
+builder.Services.AddTransient<IMailService, CloudMailService>();
+#endif
+
+builder.Services.AddSingleton<CitiesDataStore>();
 
 var app = builder.Build();
 

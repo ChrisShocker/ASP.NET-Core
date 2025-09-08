@@ -46,6 +46,7 @@ namespace CityInfo.API.Controllers
             //manually map the entities to DTOs
             foreach (var city in cityEntities)
             {
+                //manual mapping like this is tedious and error-prone
                 results.Add(
                     new CityWithoutPointsOfInterestDto
                     {

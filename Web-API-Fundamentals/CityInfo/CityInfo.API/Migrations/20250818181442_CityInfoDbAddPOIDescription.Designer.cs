@@ -2,6 +2,7 @@
 using CityInfo.API.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CityInfo.API.Migrations
 {
     [DbContext(typeof(CityInfoContext))]
-    partial class CityInfoContextModelSnapshot : ModelSnapshot
+    [Migration("20250818181442_CityInfoDbAddPOIDescription")]
+    partial class CityInfoDbAddPOIDescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
@@ -34,26 +37,6 @@ namespace CityInfo.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Cities");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "The one with that big park.",
-                            Name = "New York City"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "The one with the cathedral that was never really finished.",
-                            Name = "Antwerp"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "The capital of Norway.",
-                            Name = "Oslo"
-                        });
                 });
 
             modelBuilder.Entity("CityInfo.API.Entities.PointOfInterest", b =>
@@ -79,36 +62,6 @@ namespace CityInfo.API.Migrations
                     b.HasIndex("CityId");
 
                     b.ToTable("PointsOfInterest");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CityId = 1,
-                            Description = "A large public park in New York City.",
-                            Name = "Central Park"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CityId = 1,
-                            Description = "An art museum located on the eastern edge of Central Park.",
-                            Name = "Metropolitan Museum of Art"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CityId = 2,
-                            Description = "A Roman Catholic cathedral in Antwerp, Belgium.",
-                            Name = "Cathedral of Our Lady"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CityId = 3,
-                            Description = "A park in Oslo featuring over 200 sculptures by Gustav Vigeland.",
-                            Name = "Vigeland Sculpture Park"
-                        });
                 });
 
             modelBuilder.Entity("CityInfo.API.Entities.PointOfInterest", b =>

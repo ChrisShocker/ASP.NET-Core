@@ -64,7 +64,9 @@ builder.Services.AddSingleton<CitiesDataStore>();
 
 // add the DbContext to the service collection so it can be injected into controllers and services
 builder.Services.AddDbContext<CityInfoContext>(dbContextOptions =>
-    dbContextOptions.UseSqlite("Data Source=CityInfo.db")
+    dbContextOptions.UseSqlite(
+        builder.Configuration["ConnectionStrings:CityInfoDbConnectionString"]
+    )
 );
 
 var app = builder.Build();

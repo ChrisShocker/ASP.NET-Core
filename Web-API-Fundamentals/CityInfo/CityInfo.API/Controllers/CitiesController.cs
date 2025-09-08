@@ -1,4 +1,5 @@
 ﻿using CityInfo.API.Models;
+using CityInfo.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CityInfo.API.Controllers
@@ -13,41 +14,62 @@ namespace CityInfo.API.Controllers
     [Route("api/cities")]
     public class CitiesController : ControllerBase
     {
-        // inject the logger to log messages
-        private readonly CitiesDataStore _citiesDataStore;
+        private readonly ICityInfoRepository _cityInfoRepository;
 
-        // constructor to inject the logger
-        public CitiesController(CitiesDataStore citiesDataStore)
+        // inject the contract for the repository and not the implementation
+        public CitiesController(ICityInfoRepository cityInfoRepository)
         {
-            _citiesDataStore =
-                citiesDataStore ?? throw new ArgumentNullException(nameof(citiesDataStore));
+            _cityInfoRepository =
+                cityInfoRepository ?? throw new ArgumentNullException(nameof(cityInfoRepository));
         }
+
+        public ICityInfoRepository CityInfoRepository { get; }
 
         // use routing attribute to specify the route for this controller
         [HttpGet]
-        public ActionResult<CityDto[]> GetCities()
+        public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterestDto>>> GetCities()
         {
-            var citiesToReturn = _citiesDataStore.Cities;
+            //var citiesToReturn = _citiesDataStore.Cities;
 
-            if (citiesToReturn.Count == 0)
+            //if (citiesToReturn.Count == 0)
+            //{
+            //    return NotFound();
+            //}
+
+            //return Ok(citiesToReturn);
+
+            var cityEntities = await _cityInfoRepository.GetCitiesAsync();
+
+            // map the entities to DTOs for the response
+            var results = new List<CityWithoutPointsOfInterestDto>();
+
+            //manually map the entities to DTOs
+            foreach (var city in cityEntities)
             {
-                return NotFound();
+                results.Add(
+                    new CityWithoutPointsOfInterestDto
+                    {
+                        Id = city.Id,
+                        Name = city.Name,
+                        Description = city.Description,
+                    }
+                );
             }
 
-            return Ok(citiesToReturn);
+            return Ok(results);
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<CityDto> GetCity(int id)
-        {
-            var cityToReturn = _citiesDataStore.Cities.FirstOrDefault(c => c.Id == id);
+        //[HttpGet("{id}")]
+        //public ActionResult<CityDto> GetCity(int id)
+        //{
+        //    var cityToReturn = _citiesDataStore.Cities.FirstOrDefault(c => c.Id == id);
 
-            if (cityToReturn == null)
-            {
-                return NotFound();
-            }
+        //    if (cityToReturn == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return Ok(cityToReturn);
-        }
+        //    return Ok(cityToReturn);
+        //}
     }
 }

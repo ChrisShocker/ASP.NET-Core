@@ -25,8 +25,10 @@ builder
     {
         //input formatters can also be configured here to enforce specific formats
 
+
         // return 406 Not Acceptable on invalid format requests
-        options.ReturnHttpNotAcceptable = true;
+        //commented out to allow for content negotiation to return the default format if an unsupported format is requested
+        //options.ReturnHttpNotAcceptable = true;
     })
     .AddNewtonsoftJson()
     //add support for xml serialization

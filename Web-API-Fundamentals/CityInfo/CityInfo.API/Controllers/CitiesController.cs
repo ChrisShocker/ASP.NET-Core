@@ -2,6 +2,7 @@
 using CityInfo.API.Models;
 using CityInfo.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace CityInfo.API.Controllers
 {
@@ -68,17 +69,26 @@ namespace CityInfo.API.Controllers
             return Ok(results);
         }
 
-        //[HttpGet("{id}")]
-        //public ActionResult<CityDto> GetCity(int id)
-        //{
-        //    var cityToReturn = _citiesDataStore.Cities.FirstOrDefault(c => c.Id == id);
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCity(int id, bool includePointsOfInterest = false)
+        {
+            var city = await _cityInfoRepository.GetCityAsync(id, includePointsOfInterest);
 
-        //    if (cityToReturn == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (city == null)
+            {
+                return NotFound();
+            }
 
-        //    return Ok(cityToReturn);
-        //}
+            if (includePointsOfInterest)
+            {
+            var cityResult = _mapper.Map<CityDto>(city);
+                return Ok(cityResult);
+            }
+
+            //now we need to map the entity to a DTO for the response
+            var result = _mapper.Map<CityWithoutPointsOfInterestDto>(city);
+
+            return Ok(result);
+        }
     }
 }

@@ -37,6 +37,12 @@ namespace CityInfo.API.Services
             }
         }
 
+        // check if a city exists asynchronously
+        public async Task<bool> CityExistsAsync(int cityId)
+        {
+            return await _context.Cities.AnyAsync(c => c.Id == cityId);
+        }
+
         public async Task<PointOfInterest?> GetPointOfInterestForCityAsync(
             int cityId,
             int pointOfInterestId

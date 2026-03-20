@@ -72,6 +72,8 @@ builder.Services.AddDbContext<CityInfoContext>(dbContextOptions =>
 // register the repository with a scoped lifetime
 builder.Services.AddScoped<ICityInfoRepository, CityInfoRepository>();
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 var app = builder.Build();
 
 /* Everything below is middleware and the order it's declared in matters */

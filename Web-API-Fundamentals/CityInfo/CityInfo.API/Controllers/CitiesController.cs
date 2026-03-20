@@ -1,4 +1,5 @@
-﻿using CityInfo.API.Models;
+﻿using AutoMapper;
+using CityInfo.API.Models;
 using CityInfo.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,12 +16,15 @@ namespace CityInfo.API.Controllers
     public class CitiesController : ControllerBase
     {
         private readonly ICityInfoRepository _cityInfoRepository;
+        private readonly IMapper _mapper;
 
         // inject the contract for the repository and not the implementation
-        public CitiesController(ICityInfoRepository cityInfoRepository)
+        public CitiesController(ICityInfoRepository cityInfoRepository, IMapper mapper)
         {
             _cityInfoRepository =
                 cityInfoRepository ?? throw new ArgumentNullException(nameof(cityInfoRepository));
+
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public ICityInfoRepository CityInfoRepository { get; }
@@ -41,22 +45,26 @@ namespace CityInfo.API.Controllers
             var cityEntities = await _cityInfoRepository.GetCitiesAsync();
 
             // map the entities to DTOs for the response
-            var results = new List<CityWithoutPointsOfInterestDto>();
+            //var results = new List<CityWithoutPointsOfInterestDto>();
 
             //manually map the entities to DTOs
-            foreach (var city in cityEntities)
-            {
-                //manual mapping like this is tedious and error-prone
-                results.Add(
-                    new CityWithoutPointsOfInterestDto
-                    {
-                        Id = city.Id,
-                        Name = city.Name,
-                        Description = city.Description,
-                    }
-                );
-            }
+            //foreach (var city in cityEntities)
+            //{
+            //    //manual mapping like this is tedious and error-prone
+            //    results.Add(
+            //        new CityWithoutPointsOfInterestDto
+            //        {
+            //            Id = city.Id,
+            //            Name = city.Name,
+            //            Description = city.Description,
+            //        }
+            //    );
+            //}
 
+            //return Ok(results);
+
+            // instead of manually mapping the entities to DTOs, we can use AutoMapper to do it for us
+            var results = _mapper.Map<IEnumerable<CityWithoutPointsOfInterestDto>>(cityEntities);
             return Ok(results);
         }
 

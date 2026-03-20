@@ -127,39 +127,39 @@ namespace CityInfo.API.Controllers
             //return Ok(pointOfInterest);
         }
 
-        /*
         [HttpPost]
-        public ActionResult<PointOfInterestDto> CreatePointOfInterest(
+        public async Task<ActionResult<PointOfInterestDto>> CreatePointOfInterest(
             int cityId,
             PointOfInterestForCreationDto pointOfInterest
         )
         {
-            var city = _citiesDataStore.Cities.FirstOrDefault(c => c.Id == cityId);
+            var city = await _cityInfoRepository.GetCityAsync(cityId, false);
 
             if (city == null)
             {
                 return NotFound();
             }
 
-            var maxPointOfInterestId = _citiesDataStore
-                .Cities.SelectMany(c => c.PointsOfInterest)
-                .Max(p => p.Id);
+            var finalPointOfInterest = _mapper.Map<Entities.PointOfInterest>(pointOfInterest);
 
-            var finalPointOfInterest = new PointOfInterestDto()
-            {
-                Id = ++maxPointOfInterestId,
-                Name = pointOfInterest.Name,
-                Description = pointOfInterest.Description,
-            };
+            // the repository will assign an id to the new point of interest
+            await _cityInfoRepository.AddPointOfInterestForCityAsync(cityId, finalPointOfInterest);
+
+            // save the changes to the database
+            await _cityInfoRepository.SaveChangesAsync();
+
+            // map the new point of interest to a DTO to return to the client
+            var createdPointOfInterestToReturn = _mapper.Map<PointOfInterestDto>(finalPointOfInterest);
 
             //return uri of where the new point of interest can be found
             return CreatedAtRoute(
                 "GetPointOfInterest",
-                new { cityId = cityId, pointsOfInterestId = finalPointOfInterest.Id },
-                finalPointOfInterest
+                new { cityId = cityId, pointsOfInterestId = createdPointOfInterestToReturn.Id },
+                createdPointOfInterestToReturn
             );
         }
 
+        /*
         [HttpPut("{pointOfInterestId}")]
         public ActionResult<PointOfInterestUpdateDto> UpdatePointOfInterest(
             int cityId,

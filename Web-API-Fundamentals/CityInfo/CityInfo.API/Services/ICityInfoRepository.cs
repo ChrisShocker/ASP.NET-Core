@@ -21,5 +21,10 @@ namespace CityInfo.API.Services
         Task<PointOfInterest?> GetPointOfInterestForCityAsync(int cityId, int pointOfInterestId);
 
         Task<IEnumerable<PointOfInterest?>> GetPointsOfInterestForCityAsync(int cityId);
+
+        Task AddPointOfInterestForCityAsync(int cityId, PointOfInterest pointOfInterest);
+
+        // save changes to the database, returns true if changes were saved successfully, false otherwise
+        Task<bool> SaveChangesAsync();
     }
 }

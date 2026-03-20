@@ -159,44 +159,40 @@ namespace CityInfo.API.Controllers
             );
         }
 
-        /*
         [HttpPut("{pointOfInterestId}")]
-        public ActionResult<PointOfInterestUpdateDto> UpdatePointOfInterest(
+        public async Task<ActionResult> UpdatePointOfInterest(
             int cityId,
             int pointOfInterestId,
             PointOfInterestUpdateDto pointOfInterest
         )
         {
-            // find existing city
-            var city = _citiesDataStore.Cities.FirstOrDefault(c => c.Id == cityId);
 
-            if (city == null)
+
+
+            // find existing city
+            var cityExists = await _cityInfoRepository.CityExistsAsync(cityId);
+
+            if (!cityExists)
             {
                 return NotFound();
             }
 
             // find existing point of interest
-            var pointOfInterestToUpdate = city.PointsOfInterest.FirstOrDefault(p =>
-                p.Id == pointOfInterestId
-            );
+            var pointOfInterestToUpdate = await _cityInfoRepository.GetPointOfInterestForCityAsync(cityId, pointOfInterestId);
 
             if (pointOfInterestToUpdate == null)
             {
                 return NotFound();
             }
 
-            pointOfInterestToUpdate.Name = pointOfInterest.Name;
-            pointOfInterestToUpdate.Description = pointOfInterest.Description;
+            // map the updated point of interest to the existing point of interest, this will update the existing point of interest with the new values
+            _mapper.Map(pointOfInterest, pointOfInterestToUpdate);
 
-            return Ok(
-                new PointOfInterestDto()
-                {
-                    Id = pointOfInterestToUpdate.Id,
-                    Name = pointOfInterestToUpdate.Name,
-                    Description = pointOfInterestToUpdate.Description,
-                }
-            );
+            await _cityInfoRepository.SaveChangesAsync();
+
+            return NoContent();
         }
+        /*
 
         [HttpPatch("{pointOfInterestId}")]
         public ActionResult<PointOfInterestUpdateDto> PartiallyUpdatePointOfInterest(

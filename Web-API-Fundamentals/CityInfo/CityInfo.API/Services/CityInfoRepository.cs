@@ -72,5 +72,10 @@ namespace CityInfo.API.Services
             // save changes to the database, returns true if changes were saved successfully, false otherwise
             return (await _context.SaveChangesAsync() > 0);
         }
+
+        public void DeletePointOfInterest(PointOfInterest pointOfInterest)
+        {
+            _context.PointsOfInterest.Remove(pointOfInterest);
+        }
     }
 }

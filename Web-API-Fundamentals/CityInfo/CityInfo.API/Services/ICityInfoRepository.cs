@@ -24,6 +24,9 @@ namespace CityInfo.API.Services
 
         Task AddPointOfInterestForCityAsync(int cityId, PointOfInterest pointOfInterest);
 
+        // deleting doesn't require async as it's just marking the entity for deletion, the actual delete happens when SaveChangesAsync is called
+        void DeletePointOfInterest(PointOfInterest pointOfInterest);
+
         // save changes to the database, returns true if changes were saved successfully, false otherwise
         Task<bool> SaveChangesAsync();
     }

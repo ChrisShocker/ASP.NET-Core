@@ -32,7 +32,7 @@ namespace CityInfo.API.Controllers
 
         // use routing attribute to specify the route for this controller
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterestDto>>> GetCities()
+        public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterestDto>>> GetCities([FromQuery] string? name)
         {
             //var citiesToReturn = _citiesDataStore.Cities;
 
@@ -43,7 +43,7 @@ namespace CityInfo.API.Controllers
 
             //return Ok(citiesToReturn);
 
-            var cityEntities = await _cityInfoRepository.GetCitiesAsync();
+            var cityEntities = await _cityInfoRepository.GetCitiesAsync(name);
 
             // map the entities to DTOs for the response
             //var results = new List<CityWithoutPointsOfInterestDto>();
